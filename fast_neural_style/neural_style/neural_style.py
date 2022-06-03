@@ -15,6 +15,7 @@ import torch.onnx
 import utils
 from transformer_net import TransformerNet
 from vgg import Vgg16
+#from vgg import Vgg19
 
 
 def check_paths(args):
@@ -111,12 +112,25 @@ def train(args):
 
     # save model
     transformer.eval().cpu()
-    save_model_filename = "epoch_" + str(args.epochs) + "_" + str(time.ctime()).replace(' ', '_') + "_" + str(
-        args.content_weight) + "_" + str(args.style_weight) + ".model"
+    #save_model_filename = "epoch_" + str(args.epochs) + "_" + str(time.ctime()).replace(' ', '_') + "_" + str(
+    #    args.content_weight) + "_" + str(args.style_weight) + ".model"
+    save_model_filename = "epoch_" + str(args.epochs) + ".model"
     save_model_path = os.path.join(args.save_model_dir, save_model_filename)
-    torch.save(transformer.state_dict(), save_model_path)
+   # torch.save(transformer.state_dict(), save_model_path)
 
-    print("\nDone, trained model saved at", save_model_path)
+    custom_save_path = save_model_path
+    while True:
+        try:
+            torch.save(transformer.state_dict(), custom_save_path)
+            break
+        except:
+            print("Please enter new save path:")
+            custom_save_path = input() 
+
+    print("\nDone, trained model saved at", custom_save_path)
+
+
+   # print("\nDone, trained model saved at", save_model_path)
 
 
 def stylize(args):
@@ -146,8 +160,10 @@ def stylize(args):
             if args.export_onnx:
                 assert args.export_onnx.endswith(".onnx"), "Export model file should end with .onnx"
                 output = torch.onnx._export(
-                    style_model, content_image, args.export_onnx, opset_version=11,
-                ).cpu()            
+                    style_model,
+                    content_image, 
+                    args.export_onnx,
+                    opset_version=9).cpu()            
             else:
                 output = style_model(content_image).cpu()
     utils.save_image(args.output_image, output[0])

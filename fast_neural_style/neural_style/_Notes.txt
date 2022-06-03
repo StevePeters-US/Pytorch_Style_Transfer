@@ -1,0 +1,28 @@
+python neural_style.py eval --content-image shrek.jpg --model "D:\Github\Pytorch_Style_Transfer\fast_neural_style\saved_models\mosaic.pth" --output-image output.jpg --cuda 0
+
+python neural_style.py train --dataset "D:\Github\Pytorch_Style_Transfer\fast_neural_style\neural_style\Data\archive\train2014" --style-image shrek.jpg --save-model-dir \Output  --cuda 0
+
+python neural_style.py train --dataset "Data\archive\train2014" --style-image "TrainingImages\Shrek_Cropped.jpg"  --cuda 1  --save-model-dir "\Output"
+
+
+python neural_style.py train --dataset "Data\archive\train2014" --style-image "TrainingImages\NL.jpg"  --cuda 1  --save-model-dir "\Output"
+
+
+// Test with geese pics
+python neural_style.py eval --content-image "D:\Github\Pytorch_Style_Transfer\fast_neural_style\neural_style\Data\archive\train2014\train2014\COCO_train2014_000000000813.jpg" --model "epoch_2.model" --output-image output.jpg --cuda 1
+
+
+
+
+Convert to onnx with eval
+python neural_style.py eval --content-image shrek.jpg --model "epoch_2.model" --output-image output.jpg --cuda 0 --export_onnx shrek.onnx
+
+
+
+
+
+Evaluate onnx
+python neural_style.py eval --content-image shrek.jpg --model "shrek.onnx" --output-image output.jpg --cuda 0
+
+
+python neural_style.py eval --content-image TrainingImages\Picamon-northern-lights.jpg --model "epoch_2.model" --output-image output.jpg --cuda 0
